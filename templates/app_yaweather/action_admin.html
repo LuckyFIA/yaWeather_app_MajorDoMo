@@ -1,0 +1,65 @@
+<link href="../templates/app_yaweather/css/yaweather.css" rel="stylesheet" type="text/css">
+
+<big>Погода от Яндекс</big>
+<div class="float-right">
+	<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#about">О модуле&nbsp;&nbsp;<span class="glyphicon glyphicon-info-sign icon-white"></span>
+	</button>
+</div>
+
+<ul class="nav nav-tabs">
+ <li [#if VIEW_MODE==""#]class="active"[#endif#]><a href="?view_mode=">Погода</a></li>
+ <li [#if VIEW_MODE=="setting"#]class="active"[#endif#]><a href="?view_mode=setting">Настройки</a></li>
+</ul><br>
+
+[#if VIEW_MODE=""#]
+	[#inc view_weather.html#]
+[#endif VIEW_MODE#]
+
+ [#if VIEW_MODE="setting"#]
+	[#inc setting.html#]
+[#endif VIEW_MODE#]
+ 
+[#if VIEW_MODE="getCityId"#]
+	[#inc get_cityId.html#]
+[#endif VIEW_MODE#]
+
+<div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="about1" aria-hidden="true">
+<!-- <div id="about" class="modal hide"> -->
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Яндекс погода ver. [#VER#]</h4>
+			</div>
+			<div class="modal-body">
+				<p> Модуль получения погоды от Яндекса.<br>
+				Обсуждение модуля <a href="#" target="_blank">здесь</a>.<br>
+				<hr size="1">
+				Благодарности можно слать:
+					  <ul>
+					  <li>Яндекс.Деньги:
+						<ul>
+						  <ul>
+							<li>410011477255886 </li>
+						  </ul>
+						</ul>
+					  </li>
+					  <li>WebMoney:  </li>
+						<ul>
+						  <ul>
+							<li>Z284887760811</li>
+							<li>R238851062873</li>
+						  </ul>
+						</ul>
+					</ul>
+				</p>
+				<p class="float-left"></p>
+			</div>
+			
+			<div class="modal-footer">
+				<div class="pull-left">Best regards!<br>@LuckyFIA :)</div>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

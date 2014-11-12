@@ -1,0 +1,42 @@
+<script language="javascript">
+
+$(document).ready(function(){
+
+	function NASort(a, b) {
+		if (a.innerHTML == 'NA') {
+			return 1;
+		}
+		else if (b.innerHTML == 'NA') {
+			return -1;
+		}
+		return (a.innerHTML > b.innerHTML) ? 1 : -1;
+	};
+	$('#city option').sort(NASort).appendTo('#city');
+	
+	$('#city').change(function(){	
+		$("#city_name").val($("#city option:selected").text());
+		return false;
+	});
+});
+</script>
+
+<form action="?" method="get" class="form-horizontal" name="country_change">
+<input type="hidden" name="view_mode" value="getCityId">
+	<div class="form-group">
+		<div class="col-sm-5">
+			<select name="country" id="country" class="form-control" onchange="document.country_change.submit();">
+				[#country#]
+			</select>
+		</div>
+		<div class="col-sm-5">
+			<select name="city_id" id="city" class="form-control">
+				[#city#]
+			</select>
+		</div>
+	</div>
+	<div class="form-actions">
+		<button type="submit" name="subm" value="setCityId" class="btn btn-primary"><#LANG_SUBMIT#></button>
+		<a href="?view_mode=setting" class="btn btn-default"><#LANG_CANCEL#></a>
+		<input type="hidden" id="city_name" name="city_name" value="">
+	</div>
+</form>
