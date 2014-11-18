@@ -192,66 +192,43 @@ else{
 }
 	$temp = gg('yaweather.fact.temperature');
 	if($temp > 0) $temp = "+".$temp;
-	$fact_weather = "<div class=yaweather>
-	  <table width=100% border=0>
-		<tr>";
-	$fact_weather .= "<td rowspan=2><div class=ya_icon><img src=".$url_ico.gg('yaweather.fact.image').".png width=48 height=48>".$temp." °C</div></td>";
-	$fact_weather .= "<td align=right><#LANG_WIND#>:</td>";
-	$fact_weather .= "<td align=left>&nbsp;".$windDirection[gg('yaweather.fact.wind_direction')]."&nbsp;(".gg('yaweather.fact.wind_speed')."м/с)</td>
-		</tr>
-		<tr>
-			<td align=right><#LANG_HUMIDITY#>:</td>";
-	$fact_weather .= "<td align=left>&nbsp;".gg('yaweather.fact.humidity')."%</td>
-		</tr>
-		<tr>";
-	$fact_weather .= "<td>".gg('yaweather.fact.weather_type')."</td>";
-	$fact_weather .= "<td align=right><#LANG_PRESSURE#>:</td>";
-	$fact_weather .= "<td align=left>&nbsp;".gg('yaweather.fact.pressure')."</td>
-		 </tr>
-	   </table>
-	</div>";	
-	$out["fact_weather"] = $fact_weather;
 	
+	$out["FACT"]["temperature"] = $temp;
+	$out["FACT"]["weatherIco"] = $url_ico.gg('yaweather.fact.image').'.png';
+	$out["FACT"]["windDirection"] = $windDirection[gg('yaweather.fact.wind_direction')];
+	$out["FACT"]["windSpeed"] = gg('yaweather.fact.wind_speed');
+	$out["FACT"]["humidity"] = gg('yaweather.fact.humidity');
+	$out["FACT"]["weatherType"] = gg('yaweather.fact.weather_type');
+	$out["FACT"]["pressure"] = gg('yaweather.fact.pressure');
+		
 	$type = array(5 => 'day_short', 6 => 'night_short');
 	
 	for($i=0;$i<=$this->forecast_day-1;$i++){
 	
+		if($i == 0){
+			$out["FORECAST"][$i]["date"] = 'Сегодня '.gg('yaweather.day'.$i.'.date');
+		}
+		else{
+			$out["FORECAST"][$i]["date"] = 'Прогноз на '.gg('yaweather.day'.$i.'.date');
+		}
+		
+		
+		
+		
 		foreach($type as $types){
 			
 			$temp = gg('yaweather.day'.$i.'.'.$types.'_temperature-data_avg');
 			if($temp > 0) $temp = "+".$temp;
 			
-			if($types == $type[5]){
-				$day_type[$types] = "<div style=\"float:left; display:inline-table;\"><div><strong>Днём</strong></div>";
-			}
-			else{
-				$day_type[$types] = "<div style=\"display:inline-table;\"><div><strong>Ночью</strong></div>";
-			}
-			$day_type[$types] .= "<div class=yaweather>
-			  <table width=100% border=0>
-				<tr>";
-			$day_type[$types] .= "<td rowspan=2><div class=ya_icon><img src=".$url_ico.gg('yaweather.day'.$i.'.'.$types.'_image-v3').".png width=48 height=48>".$temp." °C</div></td>";
-			$day_type[$types] .= "<td align=right><#LANG_WIND#>:</td>";
-			$day_type[$types] .= "<td align=left>&nbsp;".$windDirection[gg('yaweather.day'.$i.'.'.$types.'_wind_direction')]."&nbsp;(".gg('yaweather.day'.$i.'.'.$types.'_wind_speed')."м/с)</td>
-				</tr>
-				<tr>
-					<td align=right><#LANG_HUMIDITY#>:</td>";
-			$day_type[$types] .= "<td align=left>&nbsp;".gg('yaweather.day'.$i.'.'.$types.'_humidity')."%</td>
-				</tr>
-				<tr>";
-			$day_type[$types] .= "<td>".gg('yaweather.day'.$i.'.'.$types.'_weather_type')."</td>";
-			$day_type[$types] .= "<td align=right><#LANG_PRESSURE#>:</td>";
-			$day_type[$types] .= "<td align=left>&nbsp;".gg('yaweather.day'.$i.'.'.$types.'_pressure')."</td>
-				 </tr>
-			   </table>
-			</div></div>";
+			$out["FORECAST"][$i][$types."_temperature"] = $temp;
+			$out["FORECAST"][$i][$types."_weatherIco"] = $url_ico.gg('yaweather.day'.$i.'.'.$types.'_image').'.png';
+			$out["FORECAST"][$i][$types."_windDirection"] = $windDirection[gg('yaweather.day'.$i.'.'.$types.'_wind_direction')];
+			$out["FORECAST"][$i][$types."_windSpeed"] = gg('yaweather.day'.$i.'.'.$types.'_wind_speed');
+			$out["FORECAST"][$i][$types."_humidity"] = gg('yaweather.day'.$i.'.'.$types.'_humidity');
+			$out["FORECAST"][$i][$types."_weatherType"] = gg('yaweather.day'.$i.'.'.$types.'_weather_type');
+			$out["FORECAST"][$i][$types."_pressure"] = gg('yaweather.day'.$i.'.'.$types.'_pressure');
 		}
-		if($i == 0){
-			$day_weather[$i]["weather"] = "<h4>Сегодня ".gg('yaweather.day'.$i.'.date')."</h4>";
-		}
-		else{
-			$day_weather[$i]["weather"] = "<h4>Прогноз на ".gg('yaweather.day'.$i.'.date')."</h4>";
-		}
+		
 		$day_weather[$i]["weather"] .= $day_type[$type[5]].$day_type[$type[6]];
 	}
 	$out["DAY_WEATHER"] = $day_weather;
@@ -307,20 +284,22 @@ function get_weather($city) {
 							if($types != $type[5] && $types != $type[6]){
 								foreach($temperature as $temp){
 									//DebMes($types.'_'.$res.'_'.$temp.'====>'.$day->day_part[$i]->$res->$temp);
-									sg('yaweather.day'.$day_count.'.'.$types.'_'.$res.'_'.$temp, $day->day_part[$i]->$res->$temp);
+									sg('yaweather.day'.$day_count.'.'.$types.'_temperatureData_'.$temp, $day->day_part[$i]->$res->$temp);
 								}
 							}
 							else{
 								//DebMes($types.'_'.$res.'_avg'.'====>'.$day->day_part[$i]->$res->avg);
-								sg('yaweather.day'.$day_count.'.'.$types.'_'.$res.'_avg', $day->day_part[$i]->$res->avg);
+								sg('yaweather.day'.$day_count.'.'.$types.'_temperatureData_avg', $day->day_part[$i]->$res->avg);
 							}
+						}
+						else if($res == $indicators[6]){
+							sg('yaweather.day'.$day_count.'.'.$types.'_image', $day->day_part[$i]->$res);
+							if($imgCache == 'on') $this->get_icon($day->day_part[$i]->$res);
 						}
 						else{
 							//DebMes($types.'_'.$res.'====>'.$day->day_part[$i]->$res);
 							sg('yaweather.day'.$day_count.'.'.$types.'_'.$res, $day->day_part[$i]->$res);
-							if($res == $indicators[6] && $imgCache == 'on'){
-								$this->get_icon($day->day_part[$i]->$res);
-							}
+							
 						}
 					}
 				}
@@ -331,7 +310,7 @@ function get_weather($city) {
 }
 
 function get_icon($image){
-	DebMes($image);
+	//DebMes($image);
 	$filename=$image.'.png';
 	
 	if (!file_exists(ROOT.'cached/yaweather/48x48/'.$filename)) {
@@ -363,7 +342,7 @@ function save_setting()
 		$forecast_day =  $this->forecast_day;
 		$type = array(1 => 'morning', 2 => 'day', 3 => 'evening', 4 => 'night');
 		
-		$indicators = array(0 => 'temperature-data',1 => 'weather_type',2 => 'wind_direction',3 => 'wind_speed',4 => 'humidity',5 => 'pressure', 6 => 'image-v3');
+		$indicators = array(0 => 'temperatureData',1 => 'weather_type',2 => 'wind_direction',3 => 'wind_speed',4 => 'humidity',5 => 'pressure', 6 => 'image');
 		$temperature = array(0 => 'avg',1 => 'from',2 => 'to');
 		
 		$class = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE 'yaweather'");
