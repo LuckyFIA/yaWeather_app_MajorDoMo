@@ -1,6 +1,7 @@
 <link href="../templates/app_yaweather/css/usual.css" rel="stylesheet" type="text/css">
-<h4>Cейчас</h4>
+
 [#if FACT#]
+	<h4>Cейчас</h4>
 	[#begin FACT#]
 		<div class="yaweather">
 			<div class="info">
@@ -28,3 +29,22 @@
 		</div>
 	[#end FACT#]
 [#endif FACT#]
+
+[#if FORECAST#]
+	[#begin FORECAST#]
+		<p><h4>[#date#]</h4></p>
+		<div class="yaweather">
+			<div class="wrapper">
+				<div class="day">Днем</div>
+				<div class="icon"><img src="[#day_short_weatherIco#]" ></div>
+				<div class="temp">[#day_short_temperature#]°</div>
+			</div>
+			<div class="wrapper">  
+				<div class="day">Ночью</div>
+				<div class="icon"><img src="[#night_short_weatherIco#]" ></div>
+				<div class="temp">[#night_short_temperature#]°</div>
+			</div>
+		</div>
+	[#end FORECAST#]
+[#endif FORECAST#]
+
