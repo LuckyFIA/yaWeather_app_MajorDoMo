@@ -313,6 +313,7 @@ function get_weather($city) {
 		}
 		$day_count++;
 	}
+	runScript(gg('yaweather.setting.updScript'));
 }
 
 function get_icon($image){
@@ -337,9 +338,11 @@ function save_setting()
 	global $forecastType;
 	global $imgCache;
 	global $update_interval;
+	global $script;
 	
 	if(isset($forecastType)) sg('yaweather.setting.forecastType',$forecastType);
 	if(!isset($imgCache)) $imgCache = 'off';
+	if(isset($script)) sg('yaweather.setting.updScript',$script);
 	sg('yaweather.setting.imgCache',$imgCache);
 	sg('yaweather.setting.updateTime',$update_interval);
 	sg('yaweather.setting.countTime',1);
@@ -390,6 +393,7 @@ function get_setting(&$out)
 	$out["forecastType"] = gg('yaweather.setting.forecastType');
 	$out["imgCache"] = gg('yaweather.setting.imgCache');
 	$out["updateTime"] = gg('yaweather.setting.updateTime');
+	$out["script"] = gg('yaweather.setting.updScript');
 	//DebMes($out);
 }
 
