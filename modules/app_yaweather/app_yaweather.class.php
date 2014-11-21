@@ -192,9 +192,8 @@ $windDirection = array('n'=>'С','nne'=>'ССВ','ne'=>'СВ','ene'=>'ВСВ','e
 
 $fact = $this->fact;
 $forecast = $this->forecast;
-if($forecast >= 0 && $forecast <3) {$this->forecast_day = $forecast;}
-else  {$forecast = -1;}
 
+if($forecast > 2 || $forecast == '' ) $forecast = -1;
 if(gg('yaweather.setting.imgCache') == 'on'){
 	$url_ico = BASE_URL.ROOTHTML."cached/yaweather/48x48/";
 }
@@ -215,7 +214,7 @@ else{
 	if($forecast >= 0){
 		
 		$type = array(5 => 'day_short', 6 => 'night_short');
-		for($i=0;$i<=$this->forecast_day;$i++){
+		for($i=0;$i<=$forecast;$i++){
 		
 			if($i == 0){
 				$out["FORECAST"][$i]["date"] = 'Сегодня '.gg('yaweather.day'.$i.'.date');
