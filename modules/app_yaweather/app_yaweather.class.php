@@ -439,7 +439,27 @@ function install() {
 $className = 'yaweather';
 $objectName = array('city', 'setting', 'fact', 'day0', 'day1', 'day2');
 $objDescription = array('Место положение', 'Настройки', 'Текущая температура', 'Прогноз погоды на день', 'Прогноз погоды на завтра', 'Прогноз погоды на послезавтра');
-
+$metodName = 'ywUpdateTime';
+$code = '
+// START yaWeather module
+	cm("city.ywUpdateTime");
+// END yaWeather module
+';
+$metodCode = '
+$updateTime = gg(\'yaweather.setting.updateTime\');
+if($updateTime > 0){
+$count = gg(\'yaweather.setting.countTime\');
+	if($count >= $updateTime){
+		include_once(DIR_MODULES.\'app_yaweather/app_yaweather.class.php\');
+		$app_yaweather=new app_yaweather();
+		$app_yaweather->get_weather(gg(\'yaweather.city.id\'));
+		sg(\'yaweather.setting.countTime\',1);
+	} else {
+		$count++;
+		sg(\'yaweather.setting.countTime\',$count);
+	}
+}
+';
 $rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '" . DBSafe($className) . "'");
 if (!$rec['ID']) {
 	$rec = array();
@@ -457,35 +477,30 @@ for ($i = 0; $i < count($objectName); $i++) {
 		$obj_rec['ID'] = SQLInsert('objects', $obj_rec);
 	}
 }
+$metod_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($metodName) . "'");
+		if (!$metod_rec['ID']) {
+			$metod_rec = array();
+			$metod_rec['OBJECT_ID'] = 0;
+			$metod_rec['CLASS_ID'] = $rec['ID'];
+			$metod_rec['TITLE'] = $metodName;
+			$metod_rec['DESCRIPTION'] = '';
+			$metod_rec['CODE'] = $metodCode;
+			$metod_rec['ID'] = SQLInsert('methods', $metod_rec);
+		}
+		else
+		{
+			$metod_rec['CODE'] = $metodCode;
+			SQLUpdate('methods', $metod_rec);
+		}
 
- 
-$code = '
-// START yaWeather module
-$updateTime = gg(\'yaweather.setting.updateTime\');
-if($updateTime > 0){
-$count = gg(\'yaweather.setting.countTime\');
-//echo"<br>updateTime = $updateTime || Count = $count";
-	if($count >= $updateTime){
-		include_once(DIR_MODULES.\'app_yaweather/app_yaweather.class.php\');
-		$app_yaweather=new app_yaweather();
-		$app_yaweather->get_weather(gg(\'yaweather.city.id\'));
-		sg(\'yaweather.setting.countTime\',1);
-		//echo"<br>Update Weather";
-	} else {
-		$count++;
-		sg(\'yaweather.setting.countTime\',$count);
-		//echo"<br>Count ++ $count";
-	}
-}
-// END yaWeather module
-';
 
 $res=SQLSelectOne("SELECT ID, CODE FROM methods WHERE OBJECT_ID='0' AND  TITLE LIKE 'onNewHour'");
 
-	if (!in_array($code, $res)) {
-		$res["CODE"] = $res["CODE"].$code;
-		SQLUpdate('methods', $res);
-	}
+		if (substr_count($res["CODE"], $code) == 0 && $res["ID"]) {
+			$res["CODE"] = $res["CODE"].$code;
+			SQLUpdate('methods', $res);
+		}
+	
 parent::install($parent_name);
 // --------------------------------------------------------------------
 }
