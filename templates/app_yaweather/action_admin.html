@@ -4,7 +4,9 @@
 	<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#about">О модуле&nbsp;&nbsp;<span class="glyphicon glyphicon-info-sign icon-white"></span>
 	</button>
 </div>
-
+[#if ERROR#]
+	<div class="alert alert-danger">[#ERROR#]</div>
+[#endif ERROR#]
 <ul class="nav nav-tabs">
  <li [#if VIEW_MODE==""#]class="active"[#endif#]><a href="?view_mode=">Погода</a></li>
  <li [#if VIEW_MODE=="setting"#]class="active"[#endif#]><a href="?view_mode=setting">Настройки</a></li>

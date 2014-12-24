@@ -1,7 +1,8 @@
 <p style="text-decoration: underline;">Вызов модуля в меню:</p>
-<p><b>&#091#module name="app_yaweather"#&#093 </b> - вывод сведений о текущей погоде</p>
-<p><b>&#091#module name="app_yaweather"  forecast="0"#&#093 </b> - вывод сведений о текущей погоде и прогнозе на сегодня</p>
-<p><b>&#091#module name="app_yaweather" fact="off" forecast="1"#&#093 </b> - вывод прогноза погоды на сегодня и завтра</p>
+<p><b>&#091#module name="app_yaweather" idCity="27612"#&#093 </b> - вывод сведений о текущей погоде в г. Москва(27612)</p>
+<p><b>&#091#module name="app_yaweather" idCity="27612" forecast="0"#&#093 </b> - вывод сведений о текущей погоде и прогнозе на сегодня в Москве</p>
+<p><b>&#091#module name="app_yaweather" idCity="27612" fact="off" forecast="1"#&#093 </b> - вывод прогноза погоды на сегодня и завтра в Москве</p>
+<p>idCity="27612" - id города</p>
 <p>fact="off" - не выводить сведения о текущей температуре</p>
 <p>forecast="0" - прогноз погоды на сегодня</p>
 <p>forecast="1" - прогноз погоды на сегодня и завтра</p>
@@ -10,4 +11,4 @@
 <p style="text-decoration: underline;">Для "ручного" обновления данных, в своих скриптах/методах можно использовать:
 <p>include_once(DIR_MODULES.'app_yaweather/app_yaweather.class.php');
 <p>$yaweather=new app_yaweather();
-<p>$yaweather->get_weather(gg('yaweather.city.id')); 
+<p>$yaweather->get_weather();

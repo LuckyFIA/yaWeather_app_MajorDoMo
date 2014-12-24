@@ -1,7 +1,32 @@
-<div class="form-group">
-Город <strong>[#city#]</strong>&nbsp;&nbsp;
-<a href="?subm=getCityId" class="btn btn-default btn-sm" title="Изменить"><span class="glyphicon glyphicon-edit"></span></a>
-</div>
+<div class="row"><div class="col-md-12">
+[#if CITY#]
+	<table align=center class="table table-condensed">
+	<tr>
+	 <td align=center>
+	   Id 
+	 </td>
+	 <td align=center>
+	   Город 
+	 </td>
+	 <td>
+	 </td>
+	
+	</tr>
+	[#begin CITY#]
+		<tr>
+		 <td align=center>[#id#]</td>
+		 <td align=center>[#name#]</td>
+		 <td align=right><a href="?subm=getCityId&id=[#id#]" class="btn btn-default btn-sm" title="Изменить"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;<a href="?subm=delCity&id=[#id#]" class="btn btn-default btn-sm" title="Удалить" onClick="return confirm('<#LANG_ARE_YOU_SURE#>')"><span class="glyphicon glyphicon-trash"></span></a></td>
+		</tr>
+	[#end CITY#]
+	<tr>
+	  <td colspan="4"><a href="?subm=getCityId&id=new" class="btn btn-default btn-sm" title="Добавить"><span class="glyphicon glyphicon-plus"></span> Добавить город</a></td>
+	</tr>
+	</table>
+[#else CITY#]
+<a href="?subm=getCityId&id=new" class="btn btn-default btn-sm" title="Добавить"><span class="glyphicon glyphicon-plus"></span> Добавить город</a>
+[#endif CITY#]
+</div></div>
 
 <form action="?" method="get" class="form-horizontal" name="save_setting">
 
