@@ -440,11 +440,7 @@ $className = 'yaweather';
 $objectName = array('city', 'setting', 'fact', 'day0', 'day1', 'day2');
 $objDescription = array('Место положение', 'Настройки', 'Текущая температура', 'Прогноз погоды на день', 'Прогноз погоды на завтра', 'Прогноз погоды на послезавтра');
 $metodName = 'ywUpdateTime';
-$code = '
-// START yaWeather module
-	cm("city.ywUpdateTime");
-// END yaWeather module
-';
+$code = '/* START yaWeather module*/cm("city.ywUpdateTime");/* END yaWeather module*/';
 $metodCode = '
 $updateTime = gg(\'yaweather.setting.updateTime\');
 if($updateTime > 0){
@@ -497,7 +493,7 @@ $metod_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $rec['ID']
 $res=SQLSelectOne("SELECT ID, CODE FROM methods WHERE OBJECT_ID='0' AND  TITLE LIKE 'onNewHour'");
 
 		if (substr_count($res["CODE"], $code) == 0 && $res["ID"]) {
-			$res["CODE"] = $res["CODE"].$code;
+			$res["CODE"] = $res["CODE"]."\n".$code;
 			SQLUpdate('methods', $res);
 		}
 	
