@@ -195,7 +195,7 @@ $forecast = $this->forecast;
 
 if($forecast > 2 || $forecast == '' ) $forecast = -1;
 if(gg('yaweather.setting.imgCache') == 'on'){
-	$url_ico = "cached/yaweather/48x48/";
+	$url_ico = "/cached/yaweather/48x48/";
 }
 else{
 	$url_ico = "http://yandex.st/weather/1.2.77/i/icons/48x48/";
