@@ -456,24 +456,24 @@ $count = gg(\'yaweather.setting.countTime\');
 	}
 }
 ';
-$rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '" . DBSafe($className) . "'");
-if (!$rec['ID']) {
-	$rec = array();
-	$rec['TITLE'] = $className;
-	$rec['DESCRIPTION'] = 'Яндекс погода';
-	$rec['ID'] = SQLInsert('classes', $rec);
-}
-for ($i = 0; $i < count($objectName); $i++) {
-	$obj_rec = SQLSelectOne("SELECT ID FROM objects WHERE CLASS_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($objectName[$i]) . "'");
-	if (!$obj_rec['ID']) {
-		$obj_rec = array();
-		$obj_rec['CLASS_ID'] = $rec['ID'];
-		$obj_rec['TITLE'] = $objectName[$i];
-		$obj_rec['DESCRIPTION'] = $objDescription[$i];
-		$obj_rec['ID'] = SQLInsert('objects', $obj_rec);
+	$rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '" . DBSafe($className) . "'");
+	if (!$rec['ID']) {
+		$rec = array();
+		$rec['TITLE'] = $className;
+		$rec['DESCRIPTION'] = 'Яндекс погода';
+		$rec['ID'] = SQLInsert('classes', $rec);
 	}
-}
-$metod_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($metodName) . "'");
+	for ($i = 0; $i < count($objectName); $i++) {
+		$obj_rec = SQLSelectOne("SELECT ID FROM objects WHERE CLASS_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($objectName[$i]) . "'");
+		if (!$obj_rec['ID']) {
+			$obj_rec = array();
+			$obj_rec['CLASS_ID'] = $rec['ID'];
+			$obj_rec['TITLE'] = $objectName[$i];
+			$obj_rec['DESCRIPTION'] = $objDescription[$i];
+			$obj_rec['ID'] = SQLInsert('objects', $obj_rec);
+		}
+	}
+	$metod_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($metodName) . "'");
 		if (!$metod_rec['ID']) {
 			$metod_rec = array();
 			$metod_rec['OBJECT_ID'] = 0;
@@ -489,14 +489,26 @@ $metod_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $rec['ID']
 			SQLUpdate('methods', $metod_rec);
 		}
 
+	$res=SQLSelectOne("SELECT ID, CODE FROM methods WHERE OBJECT_ID='0' AND  TITLE LIKE 'onNewHour'");
+	if (substr_count($res["CODE"], $code) == 0 && $res["ID"]) {
+		$res["CODE"] = $res["CODE"]."\n".$code;
+		SQLUpdate('methods', $res);
+	}
 
-$res=SQLSelectOne("SELECT ID, CODE FROM methods WHERE OBJECT_ID='0' AND  TITLE LIKE 'onNewHour'");
-
-		if (substr_count($res["CODE"], $code) == 0 && $res["ID"]) {
-			$res["CODE"] = $res["CODE"]."\n".$code;
+	$obj_rec = SQLSelectOne("SELECT ID FROM objects WHERE CLASS_ID='" . $rec['ID'] . "' AND TITLE LIKE '".DBSafe($objectName[0])."'");
+	if($obj_rec['ID']) {
+		$res = SQLSelectOne("SELECT * FROM methods WHERE OBJECT_ID='" . $obj_rec['ID'] . "' AND  TITLE LIKE '" . DBSafe($metodName) . "'");
+		if (!$res['ID']) {
+			$res = array();
+			$res['OBJECT_ID'] = $obj_rec['ID'];
+			$res['TITLE'] = $metodName;
+			$res['CALL_PARENT'] = 1;
+			$res['ID'] = SQLInsert('methods', $res);
+		} else {
+			$res['CALL_PARENT'] = 1;
 			SQLUpdate('methods', $res);
 		}
-	
+	}
 parent::install($parent_name);
 // --------------------------------------------------------------------
 }

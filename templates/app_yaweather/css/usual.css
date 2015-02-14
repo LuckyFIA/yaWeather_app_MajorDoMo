@@ -12,6 +12,12 @@
 	height: 105px;
 	width: 230px;
 }
+.yw_font {
+	font: 15px Arial, Helvetica, sans-serif;
+}
+.for_td {
+	padding: 2;
+}
 .info {
 	/*vertical-align: top;*/
 	float: left;
@@ -27,7 +33,7 @@
 	top: -20px;
 	font-size: 39px;
 }
-.table {
+.tabl {
 	float: right;
 }
 .weather_type {
@@ -37,7 +43,7 @@
 }
 .wrapper {
 	float: left;
-	width: 115px;
+	width: 105px;
 }
 .day {
 	text-align: center;

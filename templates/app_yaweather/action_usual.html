@@ -3,29 +3,29 @@
 [#if FACT#]
 	<h4>Cейчас</h4>
 	[#begin FACT#]
-		<div class="yaweather">
+		<div class="yaweather yw_font">
 			<div class="info">
 				<div class="icon"><img src="[#weatherIco#]"></div>
 			<div class="temp">[#temperature#]°</div>
 			</div>
-			<div class="table"><table width="100%" border="0">
+			<div class="tabl"><table width="100%" border="0" class="yw_font">
 			  <tbody>
 				<tr>
-				  <td align="right"><#LANG_WIND#>&nbsp;[#windDirection#]</td>
-				  <td align="left"><div align="right">[#windSpeed#]м/с</div></td>
+				  <td class="for_td" align="right"><#LANG_WIND#>&nbsp;[#windDirection#]</td>
+				  <td class="for_td" align="left"><div class="day yw_font" align="right">[#windSpeed#]м/с</div></td>
 				</tr>
 				<tr>
-				  <td align="right"><#LANG_HUMIDITY#>:</td>
-				  <td align="left"><div align="right">[#humidity#]%</div></td>
+				  <td class="for_td" align="right"><#LANG_HUMIDITY#>:</td>
+				  <td class="for_td" align="left"><div class="day yw_font" align="right">[#humidity#]%</div></td>
 				</tr>
 				<tr>
-				  <td align="right"><#LANG_PRESSURE#>:</td>
-				  <td align="left"><div align="right">[#pressure#]</div></td>
+				  <td class="for_td" align="right"><#LANG_PRESSURE#>:</td>
+				  <td class="for_td" align="left"><div class="day yw_font" align="right">[#pressure#]</div></td>
 				</tr>
 			  </tbody>
 			</table>
 			</div>
-			<div class="weather_type">[#weatherType#]</div>
+			<div class="weather_type yw_font">[#weatherType#]</div>
 		</div>
 	[#end FACT#]
 [#endif FACT#]
@@ -35,16 +35,15 @@
 		<p><h4>[#date#]</h4></p>
 		<div class="yaweather">
 			<div class="wrapper">
-				<div class="day">Днем</div>
+				<div class="day yw_font">Днем</div>
 				<div class="icon"><img src="[#day_short_weatherIco#]" ></div>
 				<div class="temp">[#day_short_temperature#]°</div>
 			</div>
-			<div class="wrapper">  
-				<div class="day">Ночью</div>
+			<div class="wrapper">
+				<div class="day yw_font">Ночью</div>
 				<div class="icon"><img src="[#night_short_weatherIco#]" ></div>
 				<div class="temp">[#night_short_temperature#]°</div>
 			</div>
 		</div>
 	[#end FORECAST#]
 [#endif FORECAST#]
-
