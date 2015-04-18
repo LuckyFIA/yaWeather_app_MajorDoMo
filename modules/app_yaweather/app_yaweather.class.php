@@ -6,7 +6,7 @@
  * module for MajorDoMo project
  * @author Fedorov Ivan <4fedorov@gmail.com>
  * @copyright Fedorov I.A.
- * @version 0.1 October 2014
+ * @version 1.0 April 2015
  */
 class app_yaweather extends module {
 /**
@@ -134,7 +134,7 @@ function admin(&$out) {
 	}
 	else if($subm == 'setting'){
 		$this->save_setting();
-		$this->get_weather(gg('city.id'));
+		$this->get_weather(gg('yw_setting.city_id'));
 		$this->view_mode = "";
 	}
 	else if($subm == 'getCityId'){
@@ -142,15 +142,15 @@ function admin(&$out) {
 		$this->get_cityId($out);
 	}
 	else if($subm == 'getWeather'){
-		$this->get_weather(gg('city.id'));
+		$this->get_weather(gg('yw_setting.city_id'));
 	}
 	
 	if($this->view_mode == ''){
-		$cityId = gg('city.id');
-		$cityName = gg('city.name');
+		$cityId = gg('yw_setting.city_id');
+		$cityName = gg('yw_setting.city_name');
 		if($cityId != '' && $cityName != ''){
 			$out["city"] = $cityName;
-			$out["data_update"] = gg('city.data_update');
+			$out["data_update"] = gg('yw_setting.data_update');
 			$this->forecast = 2;
 			$this->view_weather($out);
 		}
@@ -174,12 +174,12 @@ function admin(&$out) {
 * @access public
 */
 function usual(&$out) {
- //$this->admin($out);
-	$cityId = gg('yaweather.city.id');
-	$cityName = gg('yaweather.city.name');
+ 
+	$cityId = gg('yw_setting.city_id');
+	$cityName = gg('yw_setting.city_name');
 	if($cityId != '' && $cityName != ''){
 		$out["city"] = $cityName;
-		$out["data_update"] = gg('city.data_update');
+		$out["data_update"] = gg('yw_setting.data_update');
 		$this->view_weather($out);
 	}
 	else {
@@ -201,15 +201,16 @@ else{
 	$url_ico = "http://yandex.st/weather/1.2.77/i/icons/48x48/";
 }
 	if($fact != 'off'){
-		$temp = gg('fact.temperature');
+		$temp = gg('yw_fact.temperature');
+		$win_dir = gg('yw_fact.wind_direction');
 		if($temp > 0) $temp = "+".$temp;
 		$out["FACT"]["temperature"] = $temp;
-		$out["FACT"]["weatherIco"] = $url_ico.gg('fact.image').'.png';
-		$out["FACT"]["windDirection"] = $windDirection[gg('fact.wind_direction')];
-		$out["FACT"]["windSpeed"] = gg('fact.wind_speed');
-		$out["FACT"]["humidity"] = gg('fact.humidity');
-		$out["FACT"]["weatherType"] = gg('fact.weather_type');
-		$out["FACT"]["pressure"] = gg('fact.pressure');
+		$out["FACT"]["weatherIco"] = $url_ico.gg('yw_fact.image').'.png';
+		$out["FACT"]["windDirection"] = $windDirection["$win_dir"];
+		$out["FACT"]["windSpeed"] = gg('yw_fact.wind_speed');
+		$out["FACT"]["humidity"] = gg('yw_fact.humidity');
+		$out["FACT"]["weatherType"] = gg('yw_fact.weather_type');
+		$out["FACT"]["pressure"] = gg('yw_fact.pressure');
 	}	
 	if($forecast >= 0){
 		
@@ -217,41 +218,47 @@ else{
 		for($i=0;$i<=$forecast;$i++){
 		
 			if($i == 0){
-				$out["FORECAST"][$i]["date"] = 'Сегодня '.gg('day'.$i.'.date');
+				$out["FORECAST"][$i]["date"] = 'Сегодня '.gg('yw_day'.$i.'.date');
 			}
 			else{
-				$out["FORECAST"][$i]["date"] = 'Прогноз на '.gg('day'.$i.'.date');
+				$out["FORECAST"][$i]["date"] = 'Прогноз на '.gg('yw_day'.$i.'.date');
 			}
 			
 			foreach($type as $types){
 				
-				$temp = gg('day'.$i.'.'.$types.'_temperatureData_avg');
+				$temp = gg('yw_day'.$i.'.'.$types.'_temperatureData_avg');
 				if($temp > 0) $temp = "+".$temp;
-				
+				$win_dir = gg('yw_day'.$i.'.'.$types.'_wind_direction');
 				$out["FORECAST"][$i][$types."_temperature"] = $temp;
-				$out["FORECAST"][$i][$types."_weatherIco"] = $url_ico.gg('day'.$i.'.'.$types.'_image').'.png';
-				$out["FORECAST"][$i][$types."_windDirection"] = $windDirection[gg('day'.$i.'.'.$types.'_wind_direction')];
-				$out["FORECAST"][$i][$types."_windSpeed"] = gg('day'.$i.'.'.$types.'_wind_speed');
-				$out["FORECAST"][$i][$types."_humidity"] = gg('day'.$i.'.'.$types.'_humidity');
-				$out["FORECAST"][$i][$types."_weatherType"] = gg('day'.$i.'.'.$types.'_weather_type');
-				$out["FORECAST"][$i][$types."_pressure"] = gg('day'.$i.'.'.$types.'_pressure');
+				$out["FORECAST"][$i][$types."_weatherIco"] = $url_ico.gg('yw_day'.$i.'.'.$types.'_image').'.png';
+				$out["FORECAST"][$i][$types."_windDirection"] = $windDirection["$win_dir"];
+				$out["FORECAST"][$i][$types."_windSpeed"] = gg('yw_day'.$i.'.'.$types.'_wind_speed');
+				$out["FORECAST"][$i][$types."_humidity"] = gg('yw_day'.$i.'.'.$types.'_humidity');
+				$out["FORECAST"][$i][$types."_weatherType"] = gg('yw_day'.$i.'.'.$types.'_weather_type');
+				$out["FORECAST"][$i][$types."_pressure"] = gg('yw_day'.$i.'.'.$types.'_pressure');
 			}
 		}
 	}
 }
 
 function get_weather($city) {
+
 	$data_file = 'http://export.yandex.ru/weather-ng/forecasts/'.$city.'.xml';
 	$xml = simplexml_load_file($data_file);
-	$forecast_day =  $this->forecast_day;
+	if(isset($this->forecast_day)){
+		$forecast_day =  $this->forecast_day;	
+	} else {
+		$forecast_day =  3;
+	}
+	
 	$day_count = 0;
-	if(gg('yaweather.setting.forecastType') == 'full'){
+	if(gg('yw_setting.forecastType') == 'full'){
 		$type = array(1 => 'morning', 2 => 'day', 3 => 'evening', 4 => 'night', 5 => 'day_short', 6 => 'night_short');
 	}
 	else{
 		$type = array(5 => 'day_short', 6 => 'night_short');
 	}
-	$imgCache = gg('yaweather.setting.imgCache');
+	$imgCache = gg('yw_setting.imgCache');
 	$indicators = array(0 => 'temperature-data',1 => 'weather_type',2 => 'wind_direction',3 => 'wind_speed',4 => 'humidity',5 => 'pressure', 6 => 'image-v3');
 	$temperature = array(0 => 'avg',1 => 'from',2 => 'to');
 	
@@ -259,28 +266,28 @@ function get_weather($city) {
 		$res = explode ("T" , $fact->observation_time);
 		$get_date = explode ("-" , $res[0]);
 		$date = $res[1]." ".$get_date[2].".".$get_date[1].".".$get_date[0];
-		
-		sg('yaweather.fact.temperature', $fact->temperature);
-		sg('yaweather.fact.weather_type', $fact->weather_type);
-		sg('yaweather.fact.wind_direction', $fact->wind_direction);
-		sg('yaweather.fact.wind_speed', $fact->wind_speed);
-		sg('yaweather.fact.humidity', $fact->humidity);
-		sg('yaweather.fact.pressure', $fact->pressure);
-		sg('yaweather.fact.image', $fact->{'image-v3'});
-		sg('yaweather.city.data_update', $date);
+			
+		sg('yw_fact.temperature', $fact->temperature);
+		sg('yw_fact.weather_type', $fact->weather_type);
+		sg('yw_fact.wind_direction', $fact->wind_direction);
+		sg('yw_fact.wind_speed', $fact->wind_speed);
+		sg('yw_fact.humidity', $fact->humidity);
+		sg('yw_fact.pressure', $fact->pressure);
+		sg('yw_fact.image', $fact->{'image-v3'});
+		sg('yw_setting.data_update', $date);
 		if($imgCache == 'on') $this->get_icon($fact->{'image-v3'});
 	}
-	
+DebMes($forecast_day );	
 	foreach($xml->day as $day) {
 		if($day_count == $forecast_day) break;
 		
 		$get_date = explode ("-" , $day["date"]);
 		$date = $get_date[2].".".$get_date[1].".".$get_date[0];
-		sg('yaweather.day'.$day_count.'.date', $date);
-		sg('yaweather.day'.$day_count.'.sunrise', $day->sunrise);
-		sg('yaweather.day'.$day_count.'.sunset', $day->sunset);
-		sg('yaweather.day'.$day_count.'.moonrise', $day->moonrise);
-		sg('yaweather.day'.$day_count.'.moonset', $day->moonset);
+		sg('yw_day'.$day_count.'.date', $date);
+		sg('yw_day'.$day_count.'.sunrise', $day->sunrise);
+		sg('yw_day'.$day_count.'.sunset', $day->sunset);
+		sg('yw_day'.$day_count.'.moonrise', $day->moonrise);
+		sg('yw_day'.$day_count.'.moonset', $day->moonset);
 		
 		for($i=0;$i<=5;$i++){
 			foreach($type as $types){
@@ -289,19 +296,19 @@ function get_weather($city) {
 						if($res == $indicators[0]){
 							if($types != $type[5] && $types != $type[6]){
 								foreach($temperature as $temp){
-									sg('yaweather.day'.$day_count.'.'.$types.'_temperatureData_'.$temp, $day->day_part[$i]->$res->$temp);
+									sg('yw_day'.$day_count.'.'.$types.'_temperatureData_'.$temp, $day->day_part[$i]->$res->$temp);
 								}
 							}
 							else{
-								sg('yaweather.day'.$day_count.'.'.$types.'_temperatureData_avg', $day->day_part[$i]->$res->avg);
+								sg('yw_day'.$day_count.'.'.$types.'_temperatureData_avg', $day->day_part[$i]->$res->avg);
 							}
 						}
 						else if($res == $indicators[6]){
-							sg('yaweather.day'.$day_count.'.'.$types.'_image', $day->day_part[$i]->$res);
+							sg('yw_day'.$day_count.'.'.$types.'_image', $day->day_part[$i]->$res);
 							if($imgCache == 'on') $this->get_icon($day->day_part[$i]->$res);
 						}
 						else{
-							sg('yaweather.day'.$day_count.'.'.$types.'_'.$res, $day->day_part[$i]->$res);
+							sg('yw_day'.$day_count.'.'.$types.'_'.$res, $day->day_part[$i]->$res);
 							
 						}
 					}
@@ -310,7 +317,7 @@ function get_weather($city) {
 		}
 		$day_count++;
 	}
-	runScript(gg('yaweather.setting.updScript'));
+	runScript(gg('yw_setting.updScript'));
 }
 
 function get_icon($image){
@@ -336,12 +343,12 @@ function save_setting()
 	global $update_interval;
 	global $script;
 	
-	if(isset($forecastType)) sg('yaweather.setting.forecastType',$forecastType);
+	if(isset($forecastType)) sg('yw_setting.forecastType',$forecastType);
 	if(!isset($imgCache)) $imgCache = 'off';
-	if(isset($script)) sg('yaweather.setting.updScript',$script);
-	sg('yaweather.setting.imgCache',$imgCache);
-	sg('yaweather.setting.updateTime',$update_interval);
-	sg('yaweather.setting.countTime',1);
+	if(isset($script)) sg('yw_setting.updScript',$script);
+	sg('yw_setting.imgCache',$imgCache);
+	sg('yw_setting.updateTime',$update_interval);
+	sg('yw_setting.countTime',1);
 	
 	if($forecastType == 'shot'){
 		$forecast_day =  $this->forecast_day;
@@ -385,11 +392,11 @@ function save_setting()
 
 function get_setting(&$out)
 {
-	$out["city"] = gg('city.name');
-	$out["forecastType"] = gg('setting.forecastType');
-	$out["imgCache"] = gg('setting.imgCache');
-	$out["updateTime"] = gg('setting.updateTime');
-	$out["script"] = gg('setting.updScript');
+	$out["city"] = gg('yw_setting.city_name');
+	$out["forecastType"] = gg('yw_setting.forecastType');
+	$out["imgCache"] = gg('yw_setting.imgCache');
+	$out["updateTime"] = gg('yw_setting.updateTime');
+	$out["script"] = gg('yw_setting.updScript');
 }
 
 function save_cityId()
@@ -397,9 +404,8 @@ function save_cityId()
 	global $city_id;
 	global $city_name;
 	if((isset ($city_id) && $city_id !=0) && isset($city_name)){
-		sg('yaweather.city.id', $city_id);
-		sg('yaweather.city.name', $city_name);
-		//$this->admin($out);
+		sg('yw_setting.city_id', $city_id);
+		sg('yw_setting.city_name', $city_name);
 	}
 }
 
@@ -431,26 +437,23 @@ function get_cityId(&$out)
 */
 function install() {
 
-$className = 'yaweather';
-$objectName = array('city', 'setting', 'fact', 'day0', 'day1', 'day2');
-$objDescription = array('Место положение', 'Настройки', 'Текущая температура', 'Прогноз погоды на день', 'Прогноз погоды на завтра', 'Прогноз погоды на послезавтра');
-$metodName = 'ywUpdateTime';
-$code = '/* START yaWeather module*/cm("city.ywUpdateTime");/* END yaWeather module*/';
-$metodCode = '
-$updateTime = gg(\'setting.updateTime\');
+$className = 'ya_weather';
+$objectName = array('yw_setting', 'yw_fact', 'yw_day0', 'yw_day1', 'yw_day2');
+$objDescription = array('Настройки', 'Текущая температура', 'Прогноз погоды на день', 'Прогноз погоды на завтра', 'Прогноз погоды на послезавтра');
+$updCode = '/* START yaWeather module*/
+$updateTime = gg(\'yw_setting.updateTime\');
 if($updateTime > 0){
-$count = gg(\'setting.countTime\');
+$count = gg(\'yw_setting.countTime\');
 	if($count >= $updateTime){
 		include_once(DIR_MODULES.\'app_yaweather/app_yaweather.class.php\');
 		$app_yaweather=new app_yaweather();
-		$app_yaweather->get_weather(gg(\'city.id\'));
-		sg(\'yaweather.setting.countTime\',1);
+		$app_yaweather->get_weather(gg(\'yw_setting.city_id\'));
+		sg(\'yw_setting.countTime\',1);
 	} else {
 		$count++;
-		sg(\'yaweather.setting.countTime\',$count);
+		sg(\'yw_setting.countTime\',$count);
 	}
-}
-';
+}/* END yaWeather*/';
 	$rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '" . DBSafe($className) . "'");
 	if (!$rec['ID']) {
 		$rec = array();
@@ -468,42 +471,15 @@ $count = gg(\'setting.countTime\');
 			$obj_rec['ID'] = SQLInsert('objects', $obj_rec);
 		}
 	}
-	$metod_rec = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($metodName) . "'");
-		if (!$metod_rec['ID']) {
-			$metod_rec = array();
-			$metod_rec['OBJECT_ID'] = 0;
-			$metod_rec['CLASS_ID'] = $rec['ID'];
-			$metod_rec['TITLE'] = $metodName;
-			$metod_rec['DESCRIPTION'] = '';
-			$metod_rec['CODE'] = $metodCode;
-			$metod_rec['ID'] = SQLInsert('methods', $metod_rec);
-		}
-		else
-		{
-			$metod_rec['CODE'] = $metodCode;
-			SQLUpdate('methods', $metod_rec);
-		}
 
 	$res=SQLSelectOne("SELECT ID, CODE FROM methods WHERE OBJECT_ID='0' AND  TITLE LIKE 'onNewHour'");
-	if (substr_count($res["CODE"], $code) == 0 && $res["ID"]) {
-		$res["CODE"] = $res["CODE"]."\n".$code;
-		SQLUpdate('methods', $res);
-	}
 
-	$obj_rec = SQLSelectOne("SELECT ID FROM objects WHERE CLASS_ID='" . $rec['ID'] . "' AND TITLE LIKE '".DBSafe($objectName[0])."'");
-	if($obj_rec['ID']) {
-		$res = SQLSelectOne("SELECT * FROM methods WHERE OBJECT_ID='" . $obj_rec['ID'] . "' AND  TITLE LIKE '" . DBSafe($metodName) . "'");
-		if (!$res['ID']) {
-			$res = array();
-			$res['OBJECT_ID'] = $obj_rec['ID'];
-			$res['TITLE'] = $metodName;
-			$res['CALL_PARENT'] = 1;
-			$res['ID'] = SQLInsert('methods', $res);
-		} else {
-			$res['CALL_PARENT'] = 1;
-			SQLUpdate('methods', $res);
-		}
-	}
+	if(stripos( $res["CODE"],$updCode)===FALSE)
+      {
+         $res["CODE"] = $res["CODE"].$updCode;
+         SQLUpdate('methods', $res);
+      }
+
 parent::install($parent_name);
 // --------------------------------------------------------------------
 }

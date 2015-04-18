@@ -1,13 +1,24 @@
-<p style="text-decoration: underline;">Вызов модуля в меню:</p>
-<p><b>&#091#module name="app_yaweather"#&#093 </b> - вывод сведений о текущей погоде</p>
-<p><b>&#091#module name="app_yaweather"  forecast="0"#&#093 </b> - вывод сведений о текущей погоде и прогнозе на сегодня</p>
-<p><b>&#091#module name="app_yaweather" fact="off" forecast="1"#&#093 </b> - вывод прогноза погоды на сегодня и завтра</p>
-<p>fact="off" - не выводить сведения о текущей температуре</p>
-<p>forecast="0" - прогноз погоды на сегодня</p>
-<p>forecast="1" - прогноз погоды на сегодня и завтра</p>
-<p>forecast="2" - прогноз погоды на сегодня, завтра и послезавтра</p>
-<br>
-<p style="text-decoration: underline;">Для "ручного" обновления данных, в своих скриптах/методах можно использовать:
-<p>include_once(DIR_MODULES.'app_yaweather/app_yaweather.class.php');
-<p>$yaweather=new app_yaweather();
-<p>$yaweather->get_weather(gg('yaweather.city.id')); 
+<div class="panel panel-info">
+	<div class="panel-heading">Вызов модуля в меню</div>
+	<div class="panel-body">
+		<p><code><b>&#091#module name="app_yaweather"#&#093</b></code> - вывод сведений о текущей погоде<br>
+		<code><b>&#091#module name="app_yaweather"  forecast="0"#&#093</b></code> - вывод сведений о текущей погоде и прогнозе на сегодня<br>
+		<code><b>&#091#module name="app_yaweather" fact="off" forecast="1"#&#093</b></code> - вывод прогноза погоды на сегодня и завтра</br>
+		где<br>
+		<span style="padding-left:1em;display:block;">
+			<code>fact="off"</code> - не выводить сведения о текущей температуре<br>
+			<code>forecast="0"</code> - прогноз погоды на сегодня<br>
+			<code>forecast="1"</code> - прогноз погоды на сегодня и завтра<br>
+			<code>forecast="2"</code> - прогноз погоды на сегодня, завтра и послезавтра</p>
+		</span>
+	</div>
+</div>
+<div class="panel panel-info">
+	<div class="panel-heading">Вызов модуля в своих скриптах/методах</div>
+	<div class="panel-body">
+		<p>Для "ручного" обновления данных, в своих скриптах/методах можно использовать:<br>
+		<code style="display:block">include_once(DIR_MODULES.'app_yaweather/app_yaweather.class.php');<br>
+		$yaweather=new app_yaweather();<br>
+		$yaweather->get_weather(gg('yaweather.city.id')); </code></p>
+	</div>
+</div>
