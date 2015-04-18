@@ -242,7 +242,6 @@ else{
 }
 
 function get_weather($city) {
-
 	$data_file = 'http://export.yandex.ru/weather-ng/forecasts/'.$city.'.xml';
 	$xml = simplexml_load_file($data_file);
 	if(isset($this->forecast_day)){
@@ -277,7 +276,7 @@ function get_weather($city) {
 		sg('yw_setting.data_update', $date);
 		if($imgCache == 'on') $this->get_icon($fact->{'image-v3'});
 	}
-DebMes($forecast_day );	
+
 	foreach($xml->day as $day) {
 		if($day_count == $forecast_day) break;
 		
