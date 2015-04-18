@@ -1,35 +1,26 @@
-<div class="form-group">
-Город <strong>[#city#]</strong>&nbsp;&nbsp;
-<a href="?subm=getCityId" class="btn btn-default btn-sm" title="Изменить"><span class="glyphicon glyphicon-edit"></span></a>
-</div>
+<div class="panel panel-info">
+<div class="panel-heading">Город <strong>[#city#]</strong>&nbsp;&nbsp;<a href="?subm=getCityId" class="btn btn-default btn-sm" title="Изменить"><span class="glyphicon glyphicon-edit"></span></a></div>
+<div class="panel-body">
 
 <form action="?" method="get" class="form-horizontal" name="save_setting">
-
-<div class="form-group">
-	Получать прогноз	
-	<div class="radio">
+	Получать прогноз
+<div class="radio">
 	<label>
 		<input type="radio" name="forecastType" value="shot"[#if forecastType=="shot" || forecastType=="0"#] checked[#else#][#endif#]>
         Краткий 
     </label>
-	</div>
-	<div class="radio">
+</div>
+<div class="radio">
 	<label>
 		<input type="radio" name="forecastType" value="full"[#if forecastType=="full"#] checked[#else#][#endif#]>
         Полный
     </label>
-	</div>
 </div>
-
-<div class="form-group">	
-	<div class="checkbox">
+<div class="checkbox">
         <label>
           <input type="checkbox" name="imgCache"[#if imgCache=="off"#][#else#] checked[#endif#]> Кэшировать рисунки
         </label>
-      </div>
 </div>
-
-
 <div class="form-group">
 	<label class="col-md-3">Обновлять один раз в</label>
 	<div class="col-md-2">
@@ -43,15 +34,15 @@
 	</select> 
 	</div>
 </div>
-		
 <div class="form-group">
 	<label class="col-md-3">После обновления выполнить сценарий</label>
 	<div class="col-md-4">
 	<input type="text" name="script" class="form-control" placeholder="Имя сценария" value="[#script#]">
 	</div>
 </div>
-<div class="form-group">
-	<button type="submit" name="subm" value="setting" class="btn btn-primary"><#LANG_SUBMIT#></button>
-	<a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
-</div>
+<button type="submit" name="subm" value="setting" class="btn btn-primary"><#LANG_SUBMIT#></button>
+<a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
 </form>
+
+</div>
+</div>

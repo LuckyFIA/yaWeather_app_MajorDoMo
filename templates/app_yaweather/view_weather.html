@@ -1,6 +1,8 @@
 <link href="../templates/app_yaweather/css/admin.css" rel="stylesheet" type="text/css">
-<div><a href="?subm=getWeather" class="btn btn-info" title="Обновить"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;
+<div class="panel panel-info">
+	<div class="panel-heading"><a href="?subm=getWeather" class="btn btn-info" title="Обновить"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;
 Погода в г. [#city#] по состоянию на [#data_update#]</div>
+	<div class="panel-body">
 <h4>Cейчас</h4>
 [#if FACT#]
 	[#begin FACT#]
@@ -91,6 +93,9 @@
 					</table>
 				</div>
 			</div>
-		</div>	
-	[#end FORECAST#]
+		</div>
+[#end FORECAST#]
 [#endif FORECAST#]
+	</div>		
+</div>		
+	
