@@ -472,12 +472,10 @@ $count = gg(\'yw_setting.countTime\');
 	}
 
 	$res=SQLSelectOne("SELECT ID, CODE FROM methods WHERE OBJECT_ID='0' AND  TITLE LIKE 'onNewHour'");
-
-	if(stripos( $res["CODE"],$updCode)===FALSE)
-      {
-         $res["CODE"] = $res["CODE"].$updCode;
-         SQLUpdate('methods', $res);
-      }
+	$res['CODE']=preg_replace("/\/\* START yaWeather.+END yaWeather\*\//is","",$res['CODE']);
+	$res['CODE'] = $res['CODE'].$updCode;
+	
+	SQLUpdate('methods', $res);
 
 parent::install($parent_name);
 // --------------------------------------------------------------------
